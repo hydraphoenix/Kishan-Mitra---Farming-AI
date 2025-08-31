@@ -325,7 +325,7 @@ class AgroMRVDashboard:
             }
             
             dashboard_chart = self.visualizations.create_dashboard_summary_chart(summary_data)
-            st.plotly_chart(dashboard_chart, use_container_width=True)
+            st.plotly_chart(dashboard_chart, use_container_width=True, key="dashboard_summary_chart")
         
         with col2:
             st.subheader("🎯 NABARD Evaluation")
@@ -424,7 +424,10 @@ class AgroMRVDashboard:
                 self.components.metric_card("Area", f"{selected_farm['area_hectares']} ha", color='orange')
             
             # Tabs for different analyses
-            tab1, tab2, tab3, tab4 = st.tabs(["📊 Performance", "🌱 Carbon Analysis", "💧 Sustainability", "📈 Trends"])
+            tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+                "📊 Performance", "🌱 Carbon Analysis", "💧 Sustainability", 
+                "📈 Trends", "🌦️ Environmental", "💰 Economic"
+            ])
             
             with tab1:
                 st.subheader("🎯 Farm Performance Overview")
@@ -435,7 +438,7 @@ class AgroMRVDashboard:
                 with col1:
                     # Sustainability radar
                     radar_chart = self.visualizations.sustainability_radar_chart(farm_data)
-                    st.plotly_chart(radar_chart, use_container_width=True)
+                    st.plotly_chart(radar_chart, use_container_width=True, key=f"radar_chart_{selected_farm['farm_id']}")
                 
                 with col2:
                     # Key performance metrics
@@ -463,7 +466,7 @@ class AgroMRVDashboard:
                 
                 # Carbon flow visualization
                 carbon_chart = self.visualizations.carbon_flow_chart(farm_data)
-                st.plotly_chart(carbon_chart, use_container_width=True)
+                st.plotly_chart(carbon_chart, use_container_width=True, key=f"carbon_chart_{selected_farm['farm_id']}")
                 
                 # Carbon metrics summary
                 col1, col2, col3 = st.columns(3)
@@ -490,7 +493,7 @@ class AgroMRVDashboard:
                 with col1:
                     # Water usage vs efficiency
                     fig_water = self.visualizations.temporal_trend_analysis(farm_data)
-                    st.plotly_chart(fig_water, use_container_width=True)
+                    st.plotly_chart(fig_water, use_container_width=True, key=f"water_chart_{selected_farm['farm_id']}")
                 
                 with col2:
                     # Sustainability score breakdown
@@ -509,7 +512,7 @@ class AgroMRVDashboard:
                 
                 # Temporal analysis chart
                 trend_chart = self.visualizations.temporal_trend_analysis(farm_data)
-                st.plotly_chart(trend_chart, use_container_width=True)
+                st.plotly_chart(trend_chart, use_container_width=True, key=f"trend_chart_{selected_farm['farm_id']}")
                 
                 # Trend summary table
                 st.subheader("📋 Detailed Farm Data")
@@ -519,6 +522,203 @@ class AgroMRVDashboard:
                                  'yield_kg_per_ha', 'sustainability_score', 'water_usage_liters']
                 
                 self.components.data_table(farm_data[display_columns], "Farm Data Records", max_rows=20)
+            
+            with tab5:
+                st.subheader("🌦️ Environmental Impact Analysis")
+                
+                # Environmental metrics
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("#### 🌡️ Climate Conditions")
+                    
+                    # Temperature analysis
+                    avg_temp = farm_data['temperature_celsius'].mean()
+                    temp_range = farm_data['temperature_celsius'].max() - farm_data['temperature_celsius'].min()
+                    self.components.metric_card("Average Temperature", f"{avg_temp:.1f}°C", color='orange')
+                    self.components.metric_card("Temperature Range", f"{temp_range:.1f}°C", color='info')
+                    
+                    # Humidity analysis
+                    avg_humidity = farm_data['humidity_percent'].mean()
+                    self.components.metric_card("Average Humidity", f"{avg_humidity:.1f}%", color='blue')
+                    
+                    # Rainfall analysis
+                    total_rainfall = farm_data['rainfall_mm'].sum()
+                    self.components.metric_card("Total Rainfall", f"{total_rainfall:.1f} mm", color='primary')
+                
+                with col2:
+                    st.markdown("#### 🌱 Agricultural Conditions")
+                    
+                    # Soil analysis
+                    avg_ph = farm_data['soil_ph'].mean()
+                    ph_status = "Optimal" if 6.0 <= avg_ph <= 7.5 else "Needs Adjustment"
+                    self.components.metric_card("Soil pH", f"{avg_ph:.2f} ({ph_status})", 
+                                              color='success' if ph_status == 'Optimal' else 'warning')
+                    
+                    # Biodiversity index
+                    avg_biodiversity = farm_data['biodiversity_index'].mean()
+                    self.components.metric_card("Biodiversity Index", f"{avg_biodiversity:.1f}%", color='success')
+                    
+                    # Soil health
+                    avg_soil_health = farm_data['soil_health_index'].mean()
+                    self.components.metric_card("Soil Health Index", f"{avg_soil_health:.1f}%", color='success')
+                    
+                    # Organic matter
+                    avg_organic_matter = farm_data.get('soil_organic_matter_percent', pd.Series([3.2] * len(farm_data))).mean()
+                    self.components.metric_card("Organic Matter", f"{avg_organic_matter:.1f}%", color='green')
+                
+                # Environmental impact summary
+                st.markdown("#### 🌍 Environmental Impact Summary")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    # Water efficiency
+                    water_per_yield = farm_data['water_usage_liters'].sum() / farm_data['yield_kg_per_ha'].sum()
+                    self.components.info_card(
+                        "Water Use Efficiency",
+                        f"Using {water_per_yield:.2f} liters per kg of produce. " + 
+                        ("Excellent efficiency!" if water_per_yield < 5 else "Room for improvement"),
+                        "💧", "blue"
+                    )
+                
+                with col2:
+                    # Carbon footprint per hectare
+                    carbon_per_ha = farm_data['net_carbon_balance_kg'].sum() / selected_farm['area_hectares']
+                    self.components.info_card(
+                        "Carbon Impact per Hectare",
+                        f"{carbon_per_ha:.2f} kg CO₂eq/ha. " + 
+                        ("Carbon positive farm!" if carbon_per_ha > 0 else "Working towards carbon neutrality"),
+                        "🌿", "success" if carbon_per_ha > 0 else "warning"
+                    )
+                
+                with col3:
+                    # Regenerative practices score
+                    regen_score = (avg_biodiversity + avg_soil_health + farm_data['water_efficiency'].mean()) / 3
+                    self.components.info_card(
+                        "Regenerative Agriculture Score",
+                        f"{regen_score:.1f}% - " + 
+                        ("Excellent regenerative practices!" if regen_score > 80 else "Good progress in sustainable farming"),
+                        "🔄", "success" if regen_score > 80 else "info"
+                    )
+            
+            with tab6:
+                st.subheader("💰 Economic Analysis")
+                
+                # Economic calculations
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("#### 📈 Financial Performance")
+                    
+                    # Revenue estimation (assuming market prices)
+                    crop_prices = {
+                        'wheat': 2.5,  # ₹/kg
+                        'rice': 2.8,
+                        'maize': 2.2,
+                        'cotton': 5.5,
+                        'sugarcane': 3.2
+                    }
+                    
+                    estimated_price = crop_prices.get(selected_farm['crop_type'], 2.5)
+                    total_yield = farm_data['yield_kg_per_ha'].sum() * selected_farm['area_hectares']
+                    estimated_revenue = total_yield * estimated_price
+                    
+                    self.components.metric_card("Estimated Total Yield", f"{total_yield:.0f} kg", color='primary')
+                    self.components.metric_card("Market Price (Est.)", f"₹{estimated_price}/kg", color='info')
+                    self.components.metric_card("Estimated Revenue", f"₹{estimated_revenue:,.0f}", color='success')
+                    
+                    # Cost analysis
+                    fertilizer_cost = farm_data['fertilizer_n_kg'].sum() * 45  # ₹45/kg estimated
+                    water_cost = farm_data['water_usage_liters'].sum() * 0.02  # ₹0.02/liter estimated
+                    estimated_costs = fertilizer_cost + water_cost + (selected_farm['area_hectares'] * 15000)  # ₹15k/ha other costs
+                    
+                    self.components.metric_card("Estimated Costs", f"₹{estimated_costs:,.0f}", color='warning')
+                    
+                    # Profit estimation
+                    estimated_profit = estimated_revenue - estimated_costs
+                    profit_margin = (estimated_profit / estimated_revenue) * 100 if estimated_revenue > 0 else 0
+                    self.components.metric_card("Estimated Profit", f"₹{estimated_profit:,.0f}", 
+                                              color='success' if estimated_profit > 0 else 'danger')
+                    self.components.metric_card("Profit Margin", f"{profit_margin:.1f}%", 
+                                              color='success' if profit_margin > 20 else 'warning')
+                
+                with col2:
+                    st.markdown("#### 💚 Carbon Credit Economics")
+                    
+                    # Carbon credit calculations
+                    total_credits = farm_data['carbon_credits_potential'].sum()
+                    credit_price = 25  # ₹25 per credit (estimated)
+                    carbon_revenue = total_credits * credit_price
+                    
+                    self.components.metric_card("Total Carbon Credits", f"{total_credits:.4f}", color='green')
+                    self.components.metric_card("Credit Price (Est.)", f"₹{credit_price}/credit", color='info')
+                    self.components.metric_card("Carbon Revenue", f"₹{carbon_revenue:.2f}", color='success')
+                    
+                    # Additional income potential
+                    additional_income = carbon_revenue
+                    total_enhanced_revenue = estimated_revenue + additional_income
+                    
+                    self.components.metric_card("Enhanced Total Revenue", f"₹{total_enhanced_revenue:,.0f}", color='primary')
+                    
+                    # ROI on sustainable practices
+                    sustainability_investment = selected_farm['area_hectares'] * 5000  # ₹5k/ha for sustainable practices
+                    sustainability_roi = ((additional_income - sustainability_investment) / sustainability_investment) * 100 if sustainability_investment > 0 else 0
+                    
+                    self.components.metric_card("Sustainability Investment", f"₹{sustainability_investment:,.0f}", color='info')
+                    self.components.metric_card("Carbon ROI", f"{sustainability_roi:.1f}%", 
+                                              color='success' if sustainability_roi > 15 else 'warning')
+                
+                # Economic insights
+                st.markdown("#### 💡 Economic Insights & Recommendations")
+                
+                insights = []
+                
+                if profit_margin > 25:
+                    insights.append("✅ **Excellent profitability** - Your farm shows strong financial performance")
+                elif profit_margin > 15:
+                    insights.append("👍 **Good profitability** - Solid financial foundation with room for growth")
+                else:
+                    insights.append("⚠️ **Improvement needed** - Consider cost optimization or yield enhancement strategies")
+                
+                if carbon_revenue > 1000:
+                    insights.append("🌱 **Strong carbon credit potential** - Sustainable practices are generating additional income")
+                else:
+                    insights.append("🔄 **Carbon opportunity** - Enhance sustainable practices to increase carbon credit earnings")
+                
+                if sustainability_roi > 20:
+                    insights.append("💚 **Excellent sustainability ROI** - Your green investments are paying off well")
+                else:
+                    insights.append("📈 **Growing sustainability value** - Continue sustainable practices for long-term benefits")
+                
+                for insight in insights:
+                    st.markdown(insight)
+                
+                # Market opportunities
+                st.markdown("#### 🎯 Market Opportunities")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    self.components.info_card(
+                        "Organic Premium",
+                        f"Potential 20-30% price premium for organic certification. Additional revenue: ₹{estimated_revenue * 0.25:,.0f}",
+                        "🌿", "success"
+                    )
+                
+                with col2:
+                    self.components.info_card(
+                        "Direct Marketing",
+                        f"Bypass middlemen for 15-25% higher margins. Additional profit: ₹{estimated_revenue * 0.2:,.0f}",
+                        "🏪", "info"
+                    )
+                
+                with col3:
+                    self.components.info_card(
+                        "Value Addition",
+                        f"Processing can increase value by 40-60%. Potential revenue: ₹{estimated_revenue * 0.5:,.0f}",
+                        "⚙️", "primary"
+                    )
     
     def render_ai_predictions(self):
         """Render AI predictions and model performance page"""
@@ -692,7 +892,7 @@ class AgroMRVDashboard:
                     height=400
                 )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="ai_performance_chart")
         
         # Feature importance and model insights
         col1, col2 = st.columns(2)
@@ -771,7 +971,7 @@ class AgroMRVDashboard:
         with col1:
             st.subheader("📊 Verification Status")
             verification_chart = self.visualizations.blockchain_verification_chart(blockchain_stats)
-            st.plotly_chart(verification_chart, use_container_width=True)
+            st.plotly_chart(verification_chart, use_container_width=True, key="blockchain_verification_chart")
         
         with col2:
             st.subheader("🔐 Security Features")
@@ -1057,7 +1257,7 @@ class AgroMRVDashboard:
                     fig.add_vline(x=80, line_dash="dash", line_color="red", 
                                 annotation_text="Minimum Compliance (80%)")
                     
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key="ipcc_compliance_histogram")
                 
                 # Detailed compliance table
                 st.subheader("📋 Farm-wise IPCC Compliance")
