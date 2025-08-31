@@ -26,6 +26,7 @@ from app.utils.ipcc_compliance import IPCCTier2Calculator
 from app.utils.export import MRVExporter
 from app.dashboard.components import DashboardComponents, FormComponents
 from app.dashboard.visualizations import MRVVisualizations
+from app.utils.recommendations import FarmRecommendationsEngine, create_recommendations_summary
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -111,6 +112,9 @@ class AgroMRVDashboard:
         self.ai_manager = None
         self.blockchain = None
         self.certificate_registry = None
+        
+        # Initialize recommendations engine
+        self.recommendations_engine = FarmRecommendationsEngine()
         
         # Language translations
         self.translations = self._get_translations()
@@ -939,6 +943,95 @@ class AgroMRVDashboard:
                         }
                         
                         st.success(f"🎉 Predictions generated successfully at {st.session_state.prediction_results['timestamp']}")
+                        
+                        # Generate comprehensive recommendations
+                        st.markdown("---")
+                        st.subheader("🎯 Actionable Recommendations for Your Farm")
+                        
+                        with st.spinner("🔍 Analyzing your farm data and generating personalized recommendations..."):
+                            try:
+                                recommendations = self.recommendations_engine.generate_comprehensive_recommendations(input_data)
+                                st.session_state.farm_recommendations = recommendations
+                                
+                                # Display priority actions
+                                st.markdown("### 🔥 Top Priority Actions")
+                                
+                                for i, action in enumerate(recommendations['priority_actions'], 1):
+                                    with st.expander(f"**{i}. {action['category']}** - {action['priority']} Priority", expanded=i<=2):
+                                        st.markdown(f"**Recommendation:** {action['recommendation']}")
+                                        
+                                        col1, col2, col3 = st.columns(3)
+                                        with col1:
+                                            st.metric("Expected Benefit", action['expected_benefit'])
+                                        with col2:
+                                            st.metric("Investment Required", action['implementation_cost'])
+                                        with col3:
+                                            st.metric("Payback Period", action['payback_period'])
+                                        
+                                        st.markdown("**Action Steps:**")
+                                        for step in action['action_items']:
+                                            st.markdown(f"- {step}")
+                                
+                                # ROI Summary
+                                roi = recommendations['roi_projections']
+                                st.markdown("### 📈 Investment Return Analysis")
+                                
+                                roi_col1, roi_col2, roi_col3, roi_col4 = st.columns(4)
+                                
+                                with roi_col1:
+                                    self.components.metric_card(
+                                        "Current Profit",
+                                        f"₹{roi['current_profit']:,.0f}",
+                                        color='info'
+                                    )
+                                
+                                with roi_col2:
+                                    self.components.metric_card(
+                                        "Projected Profit",
+                                        f"₹{roi['projected_profit']:,.0f}",
+                                        color='success'
+                                    )
+                                
+                                with roi_col3:
+                                    self.components.metric_card(
+                                        "Additional Profit",
+                                        f"₹{roi['additional_profit']:,.0f}",
+                                        color='primary'
+                                    )
+                                
+                                with roi_col4:
+                                    self.components.metric_card(
+                                        "ROI",
+                                        f"{roi['roi_percentage']:.1f}%",
+                                        color='success' if roi['roi_percentage'] > 50 else 'warning'
+                                    )
+                                
+                                # Category-wise recommendations in tabs
+                                st.markdown("### 📋 Detailed Recommendations by Category")
+                                
+                                rec_tabs = st.tabs([
+                                    "🌾 Crop Management", "💧 Resource Optimization", "🌱 Soil Health",
+                                    "🚜 Mechanization", "💰 Cost Optimization", "🌍 Sustainability"
+                                ])
+                                
+                                categories = ['crop_management', 'resource_optimization', 'soil_health', 
+                                            'mechanization', 'cost_optimization', 'sustainability']
+                                
+                                for tab, category in zip(rec_tabs, categories):
+                                    with tab:
+                                        if category in recommendations and recommendations[category]:
+                                            for rec in recommendations[category]:
+                                                self.components.info_card(
+                                                    rec['category'],
+                                                    rec['recommendation'] + f"\n\n**Expected Benefit:** {rec['expected_benefit']}\n**Investment:** {rec['implementation_cost']}\n**Payback:** {rec['payback_period']}",
+                                                    "🎯", "success" if rec['priority'] == 'High' else 'info'
+                                                )
+                                        else:
+                                            st.info(f"No specific recommendations for {category.replace('_', ' ').title()} at this time.")
+                                
+                            except Exception as e:
+                                logger.error(f"Error generating recommendations: {e}")
+                                st.error("⚠️ Could not generate recommendations. Please try again.")
 
         # Show persistent results if available
         if 'prediction_results' in st.session_state and not generate_predictions:
@@ -970,6 +1063,23 @@ class AgroMRVDashboard:
                 )
             
             st.info(f"💡 Results generated on {results['timestamp']} - Click 'Generate AI Predictions' with new inputs to update")
+            
+            # Show persistent recommendations if available
+            if 'farm_recommendations' in st.session_state:
+                with st.expander("🎯 View Latest Recommendations Summary", expanded=False):
+                    recommendations = st.session_state.farm_recommendations
+                    
+                    # Quick ROI summary
+                    roi = recommendations['roi_projections']
+                    st.markdown(f"**💰 Profit Improvement Potential:** ₹{roi['additional_profit']:,.0f} (+{roi['profit_improvement']:.1f}%)")
+                    st.markdown(f"**📈 ROI:** {roi['roi_percentage']:.1f}% over {roi['payback_period']}")
+                    
+                    # Top 3 priority actions
+                    st.markdown("**🔥 Top 3 Priority Actions:**")
+                    for i, action in enumerate(recommendations['priority_actions'][:3], 1):
+                        st.markdown(f"{i}. **{action['category']}**: {action['recommendation'][:100]}...")
+                    
+                    st.markdown("*Click 'Generate AI Predictions' to see full detailed recommendations*")
         
         # Model performance analysis
         st.subheader("📊 Model Performance Analysis")
