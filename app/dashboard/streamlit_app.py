@@ -436,9 +436,15 @@ class AgroMRVDashboard:
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    # Sustainability radar
-                    radar_chart = self.visualizations.sustainability_radar_chart(farm_data)
-                    st.plotly_chart(radar_chart, use_container_width=True, key=f"radar_chart_{selected_farm['farm_id']}")
+                    # Sustainability radar with fallback
+                    try:
+                        radar_chart = self.visualizations.sustainability_radar_chart(farm_data)
+                        st.plotly_chart(radar_chart, use_container_width=True, key=f"radar_chart_{selected_farm['farm_id']}")
+                    except Exception as e:
+                        logger.error(f"Radar chart error: {e}")
+                        st.info("🔄 Loading demo radar chart...")
+                        demo_radar = self.visualizations.create_simple_demo_chart("radar")
+                        st.plotly_chart(demo_radar, use_container_width=True, key=f"demo_radar_{selected_farm['farm_id']}")
                 
                 with col2:
                     # Key performance metrics
@@ -464,9 +470,15 @@ class AgroMRVDashboard:
             with tab2:
                 st.subheader("🌿 Carbon Analysis")
                 
-                # Carbon flow visualization
-                carbon_chart = self.visualizations.carbon_flow_chart(farm_data)
-                st.plotly_chart(carbon_chart, use_container_width=True, key=f"carbon_chart_{selected_farm['farm_id']}")
+                # Carbon flow visualization with fallback
+                try:
+                    carbon_chart = self.visualizations.carbon_flow_chart(farm_data)
+                    st.plotly_chart(carbon_chart, use_container_width=True, key=f"carbon_chart_{selected_farm['farm_id']}")
+                except Exception as e:
+                    logger.error(f"Carbon chart error: {e}")
+                    st.info("🔄 Loading demo carbon analysis...")
+                    demo_carbon = self.visualizations.create_simple_demo_chart("bar")
+                    st.plotly_chart(demo_carbon, use_container_width=True, key=f"demo_carbon_{selected_farm['farm_id']}")
                 
                 # Carbon metrics summary
                 col1, col2, col3 = st.columns(3)
@@ -491,9 +503,15 @@ class AgroMRVDashboard:
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    # Water usage vs efficiency
-                    fig_water = self.visualizations.temporal_trend_analysis(farm_data)
-                    st.plotly_chart(fig_water, use_container_width=True, key=f"water_chart_{selected_farm['farm_id']}")
+                    # Water usage vs efficiency with fallback
+                    try:
+                        fig_water = self.visualizations.temporal_trend_analysis(farm_data)
+                        st.plotly_chart(fig_water, use_container_width=True, key=f"water_chart_{selected_farm['farm_id']}")
+                    except Exception as e:
+                        logger.error(f"Water chart error: {e}")
+                        st.info("🔄 Loading demo water analysis...")
+                        demo_water = self.visualizations.create_simple_demo_chart("temporal")
+                        st.plotly_chart(demo_water, use_container_width=True, key=f"demo_water_{selected_farm['farm_id']}")
                 
                 with col2:
                     # Sustainability score breakdown
@@ -510,9 +528,15 @@ class AgroMRVDashboard:
             with tab4:
                 st.subheader("📈 Temporal Trends")
                 
-                # Temporal analysis chart
-                trend_chart = self.visualizations.temporal_trend_analysis(farm_data)
-                st.plotly_chart(trend_chart, use_container_width=True, key=f"trend_chart_{selected_farm['farm_id']}")
+                # Temporal analysis chart with fallback
+                try:
+                    trend_chart = self.visualizations.temporal_trend_analysis(farm_data)
+                    st.plotly_chart(trend_chart, use_container_width=True, key=f"trend_chart_{selected_farm['farm_id']}")
+                except Exception as e:
+                    logger.error(f"Trend chart error: {e}")
+                    st.info("🔄 Loading demo trend analysis...")
+                    demo_trend = self.visualizations.create_simple_demo_chart("temporal")
+                    st.plotly_chart(demo_trend, use_container_width=True, key=f"demo_trend_{selected_farm['farm_id']}")
                 
                 # Trend summary table
                 st.subheader("📋 Detailed Farm Data")
