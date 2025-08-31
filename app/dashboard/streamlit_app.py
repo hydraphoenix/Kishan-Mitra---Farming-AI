@@ -27,6 +27,7 @@ from app.utils.export import MRVExporter
 from app.dashboard.components import DashboardComponents, FormComponents
 from app.dashboard.visualizations import MRVVisualizations
 from app.utils.recommendations import FarmRecommendationsEngine, create_recommendations_summary
+from app.utils.weather_api import WeatherAPIClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -113,8 +114,9 @@ class AgroMRVDashboard:
         self.blockchain = None
         self.certificate_registry = None
         
-        # Initialize recommendations engine
+        # Initialize recommendations engine and weather API
         self.recommendations_engine = FarmRecommendationsEngine()
+        self.weather_client = WeatherAPIClient()
         
         # Language translations
         self.translations = self._get_translations()
@@ -879,15 +881,44 @@ class AgroMRVDashboard:
                     if not predictions_generated:
                         st.info("💡 **Demo Mode**: Generating sample predictions based on your inputs")
                         
-                        # Calculate intelligent demo predictions based on inputs
-                        base_carbon = float(input_data.get('area_hectares', 2.5)) * 8.5  # ~8.5 kg CO2/ha
-                        crop_factor = {'wheat': 1.0, 'rice': 1.2, 'maize': 0.9, 'cotton': 0.8}.get(
-                            input_data.get('crop_type', 'wheat'), 1.0)
+                        # Calculate intelligent demo predictions based on inputs with weather integration
+                        area = float(input_data.get('area_hectares', 2.5))
+                        crop_type = input_data.get('crop_type', 'wheat')
+                        state = input_data.get('state', 'Punjab')
+                        
+                        # Get weather data for more accurate predictions
+                        try:
+                            weather_summary = self.weather_client.get_agricultural_weather_summary(state, crop_type)
+                            weather_factor = 1.0
+                            
+                            # Adjust predictions based on weather suitability
+                            suitability = weather_summary['crop_suitability']['overall_conditions']
+                            if suitability == 'Favorable':
+                                weather_factor = 1.15
+                            elif suitability == 'Challenging':
+                                weather_factor = 0.85
+                                
+                        except Exception as e:
+                            logger.warning(f"Could not fetch weather data: {e}")
+                            weather_factor = 1.0
+                            weather_summary = None
+                        
+                        # Enhanced prediction calculations
+                        base_carbon = area * 8.5  # ~8.5 kg CO2/ha
+                        crop_factor = {'wheat': 1.0, 'rice': 1.2, 'maize': 0.9, 'cotton': 0.8}.get(crop_type, 1.0)
                         temp_factor = max(0.8, min(1.2, (30 - float(input_data.get('temperature_celsius', 25))) / 10 + 1))
                         
-                        predicted_carbon = base_carbon * crop_factor * temp_factor
-                        predicted_yield = float(input_data.get('area_hectares', 2.5)) * crop_factor * 1200  # base 1200 kg/ha
+                        predicted_carbon = base_carbon * crop_factor * temp_factor * weather_factor
+                        predicted_yield = area * crop_factor * 1200 * weather_factor  # base 1200 kg/ha
                         predicted_water = predicted_yield * 0.065  # ~65 liters per kg yield
+                        
+                        # Adjust water needs based on weather
+                        if weather_summary and 'irrigation_recommendation' in weather_summary:
+                            irrigation_data = weather_summary['irrigation_recommendation']
+                            if irrigation_data.get('priority') == 'High':
+                                predicted_water *= 1.3
+                            elif irrigation_data.get('priority') == 'Low':
+                                predicted_water *= 0.8
                         
                         pred_col1, pred_col2, pred_col3 = st.columns(3)
                         
@@ -911,6 +942,44 @@ class AgroMRVDashboard:
                                 f"{predicted_water:.0f} L",
                                 color='info'
                             )
+                        
+                        # Show weather-based insights if available
+                        if weather_summary:
+                            st.markdown("#### 🌦️ Weather-Based Analysis")
+                            
+                            weather_col1, weather_col2, weather_col3 = st.columns(3)
+                            
+                            with weather_col1:
+                                current_weather = weather_summary['weather_summary']['current']
+                                self.components.metric_card(
+                                    "Current Weather",
+                                    f"{current_weather['temperature']:.1f}°C, {current_weather['humidity']:.0f}% RH",
+                                    color='info'
+                                )
+                            
+                            with weather_col2:
+                                suitability = weather_summary['crop_suitability']['overall_conditions']
+                                suitability_pct = weather_summary['crop_suitability']['temperature_suitability']
+                                self.components.metric_card(
+                                    "Crop Suitability",
+                                    f"{suitability} ({suitability_pct})",
+                                    color='success' if suitability == 'Favorable' else 'warning'
+                                )
+                            
+                            with weather_col3:
+                                irrigation = weather_summary.get('irrigation_recommendation', {})
+                                self.components.metric_card(
+                                    "Irrigation Priority",
+                                    irrigation.get('priority', 'Medium'),
+                                    color='danger' if irrigation.get('priority') == 'High' else 'success'
+                                )
+                            
+                            # Weather alerts and recommendations
+                            if weather_summary.get('agricultural_alerts'):
+                                st.warning("⚠️ **Weather Alerts**: " + ", ".join(weather_summary['agricultural_alerts']))
+                            
+                            if weather_summary.get('recommendations'):
+                                st.info("💡 **Weather Recommendations**: " + weather_summary['recommendations'][0])
                         
                         # Show additional insights
                         st.markdown("#### 💡 Prediction Insights")

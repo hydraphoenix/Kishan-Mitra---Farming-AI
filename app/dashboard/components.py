@@ -524,36 +524,78 @@ class FormComponents:
         }
     
     @staticmethod
-    def environmental_input_form(key_prefix: str = "") -> Dict:
-        """Create environmental parameters input form"""
+    def environmental_input_form(key_prefix: str = "", enable_weather_api: bool = True) -> Dict:
+        """Create environmental parameters input form with live weather integration"""
         st.markdown("### 🌡️ Environmental Parameters")
+        
+        # Weather API integration
+        if enable_weather_api:
+            col_weather1, col_weather2 = st.columns([3, 1])
+            with col_weather1:
+                st.info("💡 Weather data can be auto-filled from live API")
+            with col_weather2:
+                if st.button("🌦️ Get Live Weather", key=f"{key_prefix}weather_btn"):
+                    try:
+                        # Import weather API
+                        import sys
+                        import os
+                        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                        from app.utils.weather_api import WeatherAPIClient
+                        
+                        # Get state from session if available
+                        selected_state = st.session_state.get(f"{key_prefix}state", "Punjab")
+                        
+                        weather_client = WeatherAPIClient()
+                        weather_data = weather_client.get_current_weather(selected_state)
+                        
+                        # Store weather data in session state for auto-fill
+                        st.session_state[f"{key_prefix}live_weather"] = weather_data
+                        st.success(f"✅ Live weather data loaded for {selected_state}")
+                        st.rerun()
+                        
+                    except Exception as e:
+                        st.warning(f"⚠️ Could not fetch live weather data. Using manual input.")
         
         col1, col2 = st.columns(2)
         
+        # Get live weather data if available
+        live_weather = st.session_state.get(f"{key_prefix}live_weather", {})
+        current_weather = live_weather.get('current', {})
+        
         with col1:
+            # Auto-fill from live weather if available
+            default_temp = current_weather.get('temperature', 28.0)
             temperature = st.slider(
-                "Temperature (°C)",
+                "Temperature (°C)" + (" 🌡️ Live" if current_weather else ""),
                 min_value=10.0,
                 max_value=45.0,
-                value=28.0,
+                value=float(default_temp),
                 step=0.5,
                 key=f"{key_prefix}temp"
             )
             
+            default_humidity = current_weather.get('humidity', 65.0)
             humidity = st.slider(
-                "Humidity (%)",
+                "Humidity (%)" + (" 💧 Live" if current_weather else ""),
                 min_value=30.0,
                 max_value=95.0,
-                value=65.0,
+                value=float(default_humidity),
                 step=1.0,
                 key=f"{key_prefix}humidity"
             )
             
+            # Rainfall - estimated based on weather condition
+            default_rainfall = 2.5
+            if current_weather.get('weather_condition') in ['Rainy', 'Heavy Rain', 'Thunderstorm']:
+                default_rainfall = 15.0
+            elif current_weather.get('weather_condition') in ['Drizzle', 'Light Rain']:
+                default_rainfall = 5.0
+            
             rainfall = st.slider(
-                "Rainfall (mm)",
+                "Rainfall (mm)" + (" ☔ Estimated" if current_weather else ""),
                 min_value=0.0,
                 max_value=50.0,
-                value=2.5,
+                value=default_rainfall,
                 step=0.1,
                 key=f"{key_prefix}rainfall"
             )
