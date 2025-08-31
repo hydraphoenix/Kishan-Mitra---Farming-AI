@@ -29,3 +29,9 @@
 2025-08-31 11:09:21,605 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
 2025-08-31 11:09:26,158 [ERROR] agromrv:178: ERROR:__main__:Error in main application: There are multiple `plotly_chart` elements with the same auto-generated ID. When this element is created, it is assigned an internal ID based on the element type and provided parameters. Multiple elements with the same type and parameters will cause this error.
 2025-08-31 11:09:26,360 [ERROR] agromrv:178: To fix this error, please pass a unique `key` argument to the `plotly_chart` element.
+2025-08-31 14:56:31,385 [INFO] agromrv:39: Configuration validation passed
+2025-08-31 14:56:35,989 [INFO] agromrv:68: All required dependencies are installed
+2025-08-31 14:56:35,991 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-31 14:56:35,991 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-31 14:56:35,992 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-31 14:58:10,506 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
