@@ -1,0 +1,40 @@
+# AgroMRV System Requirements
+# Production-ready agricultural MRV system for NABARD Hackathon 2025
+
+# Core Framework
+streamlit>=1.28.0
+
+# Data Processing and Analysis
+pandas>=1.5.0
+numpy>=1.24.0
+
+# Machine Learning and AI
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# Visualization
+plotly>=5.15.0
+
+# Date and Time Utilities
+python-dateutil>=2.8.0
+
+# Optional but recommended for enhanced functionality
+# Uncomment these if you want additional features
+
+# PDF Report Generation (optional)
+# reportlab>=4.0.0
+
+# Excel Export (optional)
+# openpyxl>=3.1.0
+
+# Enhanced HTTP requests (optional)
+# requests>=2.31.0
+
+# Configuration management (optional)
+# python-dotenv>=1.0.0
+
+# Development and Testing (optional)
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# black>=23.7.0
+# flake8>=6.0.0

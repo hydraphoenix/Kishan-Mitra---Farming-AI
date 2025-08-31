@@ -1,0 +1,20 @@
+2025-08-30 11:40:45,380 [INFO] agromrv:39: Configuration validation passed
+2025-08-30 11:41:03,652 [INFO] agromrv:68: All required dependencies are installed
+2025-08-30 11:41:03,653 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-30 11:41:03,654 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-30 11:41:03,654 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-30 11:41:23,498 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
+2025-08-30 11:42:50,826 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating radar chart:
+2025-08-30 11:42:55,346 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating carbon flow chart: Invalid property specified for object of type plotly.graph_objs.Waterfall: 'marker'
+2025-08-30 11:43:33,480 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-30 11:43:38,147 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-30 11:43:42,674 [ERROR] agromrv:178: ERROR:__main__:Error in main application: There are multiple `plotly_chart` elements with the same auto-generated ID. When this element is created, it is assigned an internal ID based on the element type and provided parameters. Multiple elements with the same type and parameters will cause this error.
+2025-08-30 11:43:42,876 [ERROR] agromrv:178: To fix this error, please pass a unique `key` argument to the `plotly_chart` element.
+2025-08-30 12:45:11,855 [INFO] agromrv:39: Configuration validation passed
+2025-08-30 12:45:15,372 [INFO] agromrv:68: All required dependencies are installed
+2025-08-30 12:45:15,372 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-30 12:45:15,373 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-30 12:45:15,373 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-30 12:45:30,236 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
+2025-08-30 12:53:54,578 [ERROR] agromrv:178: ERROR:__main__:Error in main application: module 'streamlit' has no attribute 'experimental_rerun'
+2025-08-30 12:58:06,139 [ERROR] agromrv:178: ERROR:__main__:Error in main application: module 'streamlit' has no attribute 'experimental_rerun'

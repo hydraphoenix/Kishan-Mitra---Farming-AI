@@ -1,0 +1,31 @@
+2025-08-31 09:53:06,154 [INFO] agromrv:39: Configuration validation passed
+2025-08-31 09:53:17,355 [INFO] agromrv:68: All required dependencies are installed
+2025-08-31 09:53:17,356 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-31 09:53:17,356 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-31 09:53:17,356 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-31 09:53:31,495 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
+2025-08-31 09:54:06,224 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating radar chart:
+2025-08-31 09:54:10,775 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating carbon flow chart: Invalid property specified for object of type plotly.graph_objs.Waterfall: 'marker'
+2025-08-31 09:54:51,171 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating radar chart:
+2025-08-31 09:54:55,694 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating carbon flow chart: Invalid property specified for object of type plotly.graph_objs.Waterfall: 'marker'
+2025-08-31 09:55:34,091 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-31 09:55:39,284 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-31 09:55:43,819 [ERROR] agromrv:178: ERROR:__main__:Error in main application: There are multiple `plotly_chart` elements with the same auto-generated ID. When this element is created, it is assigned an internal ID based on the element type and provided parameters. Multiple elements with the same type and parameters will cause this error.
+2025-08-31 09:55:44,022 [ERROR] agromrv:178: To fix this error, please pass a unique `key` argument to the `plotly_chart` element.
+2025-08-31 11:02:38,748 [INFO] agromrv:39: Configuration validation passed
+2025-08-31 11:02:42,366 [INFO] agromrv:68: All required dependencies are installed
+2025-08-31 11:02:42,366 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-31 11:02:42,366 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-31 11:02:42,367 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-31 11:07:10,575 [INFO] agromrv:39: Configuration validation passed
+2025-08-31 11:07:15,343 [INFO] agromrv:68: All required dependencies are installed
+2025-08-31 11:07:15,376 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-31 11:07:15,376 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-31 11:07:15,377 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-31 11:08:12,922 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
+2025-08-31 11:08:34,435 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating radar chart:
+2025-08-31 11:08:38,959 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating carbon flow chart: Invalid property specified for object of type plotly.graph_objs.Waterfall: 'marker'
+2025-08-31 11:09:17,083 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-31 11:09:21,605 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
+2025-08-31 11:09:26,158 [ERROR] agromrv:178: ERROR:__main__:Error in main application: There are multiple `plotly_chart` elements with the same auto-generated ID. When this element is created, it is assigned an internal ID based on the element type and provided parameters. Multiple elements with the same type and parameters will cause this error.
+2025-08-31 11:09:26,360 [ERROR] agromrv:178: To fix this error, please pass a unique `key` argument to the `plotly_chart` element.

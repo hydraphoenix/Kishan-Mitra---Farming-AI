@@ -1,0 +1,27 @@
+2025-08-28 15:24:45,339 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:24:58,920 [ERROR] agromrv:64: Missing required packages: ['streamlit', 'scikit-learn']
+2025-08-28 15:25:07,306 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:25:51,986 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:25:57,943 [ERROR] agromrv:64: Missing required packages: ['scikit-learn']
+2025-08-28 15:26:58,901 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:27:02,791 [INFO] agromrv:68: All required dependencies are installed
+2025-08-28 15:40:26,877 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:40:27,027 [ERROR] agromrv:430: Application error: 'Namespace' object has no attribute 'host'
+2025-08-28 15:42:31,137 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:42:31,137 [ERROR] agromrv:430: Application error: 'Namespace' object has no attribute 'host'
+2025-08-28 15:43:00,460 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:43:06,311 [INFO] agromrv:68: All required dependencies are installed
+2025-08-28 15:43:06,312 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-28 15:43:06,312 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-28 15:43:06,312 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-28 15:43:22,695 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:43:28,834 [INFO] agromrv:68: All required dependencies are installed
+2025-08-28 15:44:04,720 [INFO] agromrv:39: Configuration validation passed
+2025-08-28 15:44:08,686 [INFO] agromrv:68: All required dependencies are installed
+2025-08-28 15:44:08,687 [INFO] agromrv:105: Launching AgroMRV Dashboard...
+2025-08-28 15:44:08,687 [INFO] agromrv:106: URL: http://localhost:8501
+2025-08-28 15:44:08,688 [INFO] agromrv:107: AgroMRV System v1.0.0
+2025-08-28 15:44:30,994 [WARNING] agromrv:180: WARNING:root:ReportLab not available - PDF generation will be limited
+2025-08-28 15:45:50,698 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating radar chart:
+2025-08-28 15:45:55,273 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating carbon flow chart: Invalid property specified for object of type plotly.graph_objs.Waterfall: 'marker'
+2025-08-28 15:46:34,598 [ERROR] agromrv:178: ERROR:app.dashboard.visualizations:Error creating temporal analysis:
