@@ -331,7 +331,7 @@ flake8 app/
 ## 📝 License & Legal
 
 ### License
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](https://github.com/hydraphoenix/Kishan-Mitra---Farming-AI/tree/main?tab=MIT-1-ov-file) file for details.
 
 ### Disclaimer
 - This software is provided for educational and demonstration purposes
@@ -350,17 +350,15 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 📞 Support & Contact
 
 ### Technical Support
-- **Email**: support@agromrv.com
-- **Documentation**: [docs.agromrv.com](https://docs.agromrv.com)
+- **Email**: parthavsinh@gmail.com
 - **Issue Tracker**: GitHub Issues
 
 ### Business Inquiries
-- **Partnerships**: partnerships@agromrv.com
-- **Licensing**: licensing@agromrv.com
-- **Media**: media@agromrv.com
+- **Partnerships**: parthavsinh@gmail.com
+
 
 ### Team
-- **Development Team**: AgroMRV Core Team
+- **Development Team**: Team PV
 - **Project Type**: NABARD Hackathon 2025 Submission
 - **Category**: AgTech Innovation - Climate Finance
 
